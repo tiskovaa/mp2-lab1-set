@@ -11,10 +11,7 @@
 static TBitField FAKE_BITFIELD(1);
 static TSet FAKE_SET(1);
 
-TSet::TSet(int mp) : BitField(mp)
-{
-    this->MaxPower = mp;
-}
+TSet::TSet(int mp) : BitField(mp), MaxPower(mp) {};
 
 // конструктор копирования
 TSet::TSet(const TSet&s):BitField(s.BitField),MaxPower(s.MaxPower){}
@@ -51,7 +48,7 @@ void TSet::DelElem(const int Elem) // исключение элемента мн
 
 TSet& TSet::operator=(const TSet &s) // присваивание
 {
-    if (this !=& s) {////////////////////////////////////////////////////
+    if (this !=& s) {
         this->MaxPower=s.MaxPower;
         this->BitField=s.BitField;
     }
@@ -60,16 +57,12 @@ TSet& TSet::operator=(const TSet &s) // присваивание
 
 int TSet::operator==(const TSet &s) const // сравнение
 {
-    if ((MaxPower == s.MaxPower) && (BitField == s.BitField)) return 1;
-    return 0;
+    return (BitField == s.BitField);
 }
 
 int TSet::operator!=(const TSet &s) const // сравнение
 {
-    if (*this == s)
-    return 0;
-    else
-        return 1;
+    return !(*this == s);
 }
 
 TSet TSet::operator+(const TSet &s) // объединение

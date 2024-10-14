@@ -86,11 +86,9 @@ int TBitField::GetBit(const int n) const // получить значение б
 {
     if ((n < 0) || (n >= BitLen)) 
         throw "is not correct bit";
-    int i = GetMemIndex(n);
-    TELEM mask = GetMemMask(n);
-    int res = pMem[i] & mask;
-    return res;
+    return (pMem[GetMemIndex(n)] & GetMemMask(n)) > 0;
 }
+
 
 // битовые операции
 
@@ -126,7 +124,7 @@ int TBitField::operator==(const TBitField &bf) const // сравнение
 
 int TBitField::operator!=(const TBitField &bf) const // сравнение
 {
-    return !(*this == bf);////////////////////////////////////////////////////////////
+    return !(*this == bf);
 }
 
 TBitField TBitField::operator|(const TBitField& bf) // операция "или"
@@ -146,23 +144,19 @@ TBitField TBitField::operator|(const TBitField& bf) // операция "или"
     }
     return tmp;
 }
-TBitField TBitField::operator&(const TBitField &bf) // операция "и"
+TBitField TBitField::operator&(const TBitField& bf) // операция "и"
 {
-    TBitField tmp(0);
-    TBitField bitf(0);
-    if (BitLen <= bf.BitLen) {
-        tmp = bf;
-        bitf = *this;
-    }
-    else {
-        tmp = *this;
-        bitf = bf;
-    }
-    for (int i = 0; i < bitf.MemLen; i++) {
-        tmp.pMem[i] &= bitf.pMem[i];
-    }
-    return tmp;
+    const int maxBL = max(BitLen, bf.BitLen);
+    const int minML = min(MemLen, bf.MemLen);
+    TBitField mas(maxBL);
+    for (int i = 0; i < minML; i++) {
+        mas.pMem[i] = pMem[i] & bf.pMem[i];
+        }
+    return mas;
+
 }
+    
+    
 
 TBitField TBitField::operator~(void) // отрицание
 {
