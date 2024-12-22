@@ -1,30 +1,94 @@
 #include "tbitfield.h"
 
 #include <gtest.h>
+//Fixtures
 
-TEST(TBitField, can_create_bitfield_with_positive_length)
+class TestTBitField : public ::testing::Test
 {
-  ASSERT_NO_THROW(TBitField bf(3));
+protected:
+
+    void SetUp()
+    {
+
+        bf = new TBitField(5);
+
+        bf->SetBit(1);
+
+        bf->SetBit(2);
+
+        bf->SetBit(3);
+    }
+
+    void TearDown()
+    {
+        delete bf;
+    }
+
+    TBitField* bf;
+};
+
+TEST_F(TestTBitField, can_create_bitfield_with_positive_length)
+{
+
+    TBitField temp(5);
+
+    ASSERT_NO_THROW(temp);
+}
+//tests
+TEST(TBitField, can_make_copy_right_bit_len) 
+{
+    TBitField a(16);
+
+    TBitField b = a;
+
+    EXPECT_EQ(16, b.GetLength());
+}
+TEST(TBitField, can_xor) 
+{
+    TBitField a(5), b(5);
+    TBitField c(5);
+    c.SetBit(0);
+    c.SetBit(1);
+    c.SetBit(4);
+    a.SetBit(1);
+    a.SetBit(2);
+    b.SetBit(0);
+    b.SetBit(2);
+    b.SetBit(4);
+    TBitField f = ((a & (~b)) | (b & (~a)));
+    EXPECT_EQ(f, c);
 }
 
-TEST(TBitField, can_get_length)
+TEST(TBitField, can_make_U_peresech_Bit) 
 {
-  TBitField bf(3);
-
-  EXPECT_EQ(3, bf.GetLength());
+    TBitField a(5);
+    a.SetBit(3);
+    a.SetBit(0);
+    TBitField b = ~a;
+    TBitField c(5);
+    c.SetBit(0);
+    c.SetBit(1);
+    c.SetBit(2);
+    c.SetBit(3);
+    c.SetBit(4);
+    EXPECT_EQ(c, b | a);
 }
 
-TEST(TBitField, new_bitfield_is_set_to_zero)
-{
-  TBitField bf(100);
 
+TEST_F(TestTBitField, can_get_length)
+{
+  EXPECT_EQ(5, bf->GetLength());
+}
+
+TEST_F(TestTBitField, new_bitfield_is_set_to_zero)
+{
   int sum = 0;
-  for (int i = 0; i < bf.GetLength(); i++)
+  for (int i = 0; i < bf->GetLength(); i++)
   {
-    sum += bf.GetBit(i);
+    sum += bf->GetBit(i);
   }
 
-  EXPECT_EQ(0, sum);
+  EXPECT_EQ(3, sum);
 }
 
 TEST(TBitField, can_set_bit)

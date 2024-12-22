@@ -2,32 +2,73 @@
 
 #include <gtest.h>
 
-TEST(TSet, can_get_max_power_set)
+class TestTSet : public ::testing::Test
 {
-  const int size = 5;
-  TSet set(size);
+protected:
 
-  EXPECT_EQ(size, set.GetMaxPower());
+	void SetUp()
+	{
+		s = new TSet(5);
+	}
+	void TearDown()
+	{
+		delete s;
+	}
+	TSet* s;
+};
+
+TEST_F(TestTSet, can_get_max_power_set)
+{
+	EXPECT_EQ(5, s->GetMaxPower());
+}
+//tests
+TEST(TSet, can_make_copy_right_max_power)	
+{
+	TSet a(16);
+	TSet b = a;
+	EXPECT_EQ(16, b.GetMaxPower());
+}
+TEST(TSet, can_xor_) 
+{
+	TSet a(3), b(3);
+	TSet c(3);
+	a.InsElem(1);
+	a.InsElem(2);
+	b.InsElem(0);
+	c.InsElem(0);
+	c.InsElem(1);
+	c.InsElem(2);
+	TSet f = ((a * (~b)) + (b * (~a)));
+	EXPECT_EQ(f, c);
 }
 
-TEST(TSet, can_insert_non_existing_element)
+TEST(TSet, can_make_U_peresech) 
 {
-  const int size = 5, k = 3;
-  TSet set(size);
-  set.InsElem(k);
-
-  EXPECT_NE(set.IsMember(k), 0);
+	TSet a(5);
+	a.InsElem(3);
+	a.InsElem(0);
+	TSet b = ~a;
+	TSet c(5);
+	c.InsElem(0);
+	c.InsElem(1);
+	c.InsElem(2);
+	c.InsElem(3);
+	c.InsElem(4);
+	EXPECT_EQ(c, b + a);
+}
+TEST_F(TestTSet, can_insert_non_existing_element)
+{
+	const int k = 3;
+	s->InsElem(k);
+	EXPECT_NE(s->IsMember(k), 0);
 }
 
-TEST(TSet, can_insert_existing_element)
+TEST_F(TestTSet, can_insert_existing_element)
 {
-  const int size = 5;
-  const int k = 3;
-  TSet set(size);
-  set.InsElem(k);
-  set.InsElem(k);
-
-  EXPECT_NE(set.IsMember(k), 0);
+	const int k = 3;
+	s->InsElem(k);
+	s->InsElem(k);
+    EXPECT_NE(s->IsMember(k), 0);
 }
 
 TEST(TSet, can_delete_non_existing_element)
